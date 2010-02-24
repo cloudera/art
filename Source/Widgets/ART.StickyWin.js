@@ -121,6 +121,10 @@ ART.StickyWin = new Class({
 		this.element.addEvent('click:relay(.' + this.options.closeClass + ')', function(){
 			this.hide();
 		}.bind(this));
+		
+		this.addEvent('shade', function(dragging) {
+			if (!dragging) this.updateMaskPosition();
+		});
 	},
 
 	attach: function(attach){
@@ -160,11 +164,24 @@ ART.StickyWin = new Class({
 		}
 	},
 
-	maskTarget: function(){
-		var target = $(this.options.maskTarget);
-		if (!target && this.options.maskOptions.inject && this.options.maskOptions.inject.target)
-			target = $(this.options.maskOptions.inject.target) || $(document.body);
-		else target = $(document.body);
+	getMaskTarget: function(target){
+		target = $(target) || $(this.options.maskTarget);
+		if (!target) {
+			if (this.options.maskOptions.inject && this.options.maskOptions.inject.target)
+				target = $(this.options.maskOptions.inject.target) || $(document.body);
+			else target = $(this);
+		}
+		return target;
+	},
+	
+	updateMaskPosition: function(target){
+		target = this.getMaskTarget(target);
+		var mask = target.retrieve('StickyWin:mask');
+		if (mask && !mask.hidden) mask.position();
+	},
+
+	maskTarget: function(target){
+		target = this.getMaskTarget(target);
 		var mask = target.retrieve('StickyWin:mask');
 		if (!mask) {
 			var zIndex = this.options.maskOptions.zIndex;
@@ -188,6 +205,7 @@ ART.StickyWin = new Class({
 			this.addEvent('hide', function(){
 				if (!mask.hidden) mask.hide();
 			});
+			target.store('StickyWin:mask', mask);
 		}
 		mask.show();
 	},

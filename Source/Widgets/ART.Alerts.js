@@ -273,7 +273,7 @@ ART.Window.AlertTools = new Class({
 			mask: true,
 			maskOptions: {
 				inject: {
-					target: $(this.getWindow().content),
+					target: win.content,
 					where: 'after'
 				}
 			},
@@ -294,8 +294,13 @@ ART.Window.AlertTools = new Class({
 		enableKB();
 		if (win) {
 			win.fireEvent('alert');
+			var maskResizer = $empty;
 			var shader = function(dragging) {
 				$(alert).setStyle('display', dragging ? 'none' : 'block');
+				if (!dragging) {
+					maskResizer();
+					maskResizer = $empty;
+				}
 			};
 			alert.addEvents({
 				destroy: function(){
@@ -311,7 +316,12 @@ ART.Window.AlertTools = new Class({
 					win.fireEvent('alert');
 				}
 			});
-			win.addEvent('shade', shader);
+			win.addEvents({
+				shade: shader,
+				resize: function(){
+					maskResizer = win.updateMaskPosition.bind(win, win.content);
+				}
+			});
 		}
 		return alert;
 	},
