@@ -9,7 +9,7 @@ authors: [Valerio Proietti](http://mad4milk.net)
 
 provides: [ART.Shapes, ART.Rectangle, ART.Pill, ART.Ellipse]
 
-requires: [ART.Path, ART.Shape]
+requires: [ART.Path, ART.SVG.Shape, ART.VML.Shape]
 
 ...
 */

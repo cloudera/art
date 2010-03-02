@@ -7,7 +7,7 @@ description: VML implementation for ART
 
 authors: [Simo Kinnunen](http://twitter.com/sorccu), [Valerio Proietti](http://mad4milk.net)
 
-provides: [ART.VML, ART.Group, ART.Shape]
+provides: [ART.VML, ART.VML.Group, ART.VML.Shape]
 
 requires: [ART, ART.Element, ART.Container, ART.Path]
 

@@ -9,7 +9,7 @@ authors: [Simo Kinnunen](http://twitter.com/sorccu), ART adaptation by [Valerio 
 
 provides: ART.Font
 
-requires: ART.Shape
+requires: [ART.SVG.Shape, ART.VML.Shape]
 
 ...
 */

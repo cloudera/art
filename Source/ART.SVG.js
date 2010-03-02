@@ -7,7 +7,7 @@ description: SVG implementation for ART
 
 authors: [Valerio Proietti](http://mad4milk.net)
 
-provides: [ART.SVG, ART.Group, ART.Shape]
+provides: [ART.SVG, ART.SVG.Group, ART.SVG.Shape]
 
 requires: [ART, ART.Element, ART.Container, ART.Path]
 

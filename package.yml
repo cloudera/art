@@ -21,3 +21,11 @@ sources:
   - "Source/ART.Font.js"
   - "Fonts/Moderna.js"
   - "Fonts/Moderna.Bold.js"
+
+external repositories:
+  color:
+    git: git://github.com/kamicane/color.git
+    local: Color/package.yml
+  table:
+    git: git://github.com/kamicane/table.git
+    local: Table/package.yml
