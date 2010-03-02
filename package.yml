@@ -29,3 +29,6 @@ external repositories:
   table:
     git: git://github.com/kamicane/table.git
     local: Table/package.yml
+  core:
+    git: git://github.com/mootools/mootools-core.git
+    local: MooTools/package.yml

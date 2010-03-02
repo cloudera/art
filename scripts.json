@@ -3,7 +3,7 @@
 	"Source": {
 
 		"ART": {
-			"deps": ["Color", "Table"],
+			"deps": ["Class", "Color", "Table"],
 			"desc": "The base ART Class."
 		},
 		

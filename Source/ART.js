@@ -9,7 +9,7 @@ authors: [Valerio Proietti](http://mad4milk.net), [The MooTools development team
 
 provides: [ART, ART.Element, ART.Container]
 
-requires: [table/Table, color/Color]
+requires: [table/Table, color/Color, core/Class]
 ...
 */
 
