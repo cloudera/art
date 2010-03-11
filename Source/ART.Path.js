@@ -5,11 +5,11 @@ name: ART.Path
 
 description: Class to generate a valid SVG path using method calls.
 
-authors: [Valerio Proietti](http://mad4milk.net)
+authors: "[Valerio Proietti](http://mad4milk.net)"
 
-provides: ART.Path
+provides: [ART.Path]
 
-requires: ART
+requires: [/ART]
 
 ...
 */

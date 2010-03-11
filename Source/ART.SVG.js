@@ -5,11 +5,11 @@ name: ART.SVG
 
 description: SVG implementation for ART
 
-authors: [Valerio Proietti](http://mad4milk.net)
+authors: "[Valerio Proietti](http://mad4milk.net)"
 
 provides: [ART.SVG, ART.SVG.Group, ART.SVG.Shape]
 
-requires: [ART, ART.Element, ART.Container, ART.Path]
+requires: [/ART, /ART.Element, /ART.Container, /ART.Path]
 
 ...
 */

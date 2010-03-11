@@ -5,11 +5,11 @@ name: ART.VML
 
 description: VML implementation for ART
 
-authors: [Simo Kinnunen](http://twitter.com/sorccu), [Valerio Proietti](http://mad4milk.net)
+authors: "[Simo Kinnunen](http://twitter.com/sorccu), [Valerio Proietti](http://mad4milk.net)"
 
 provides: [ART.VML, ART.VML.Group, ART.VML.Shape]
 
-requires: [ART, ART.Element, ART.Container, ART.Path]
+requires: [/ART, /ART.Element, /ART.Container, /ART.Path]
 
 ...
 */

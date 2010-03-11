@@ -5,11 +5,11 @@ name: ART.Shapes
 
 description: Shapes for ART
 
-authors: [Valerio Proietti](http://mad4milk.net)
+authors: "[Valerio Proietti](http://mad4milk.net)"
 
 provides: [ART.Shapes, ART.Rectangle, ART.Pill, ART.Ellipse]
 
-requires: [ART.Path, ART.SVG.Shape, ART.VML.Shape]
+requires: [/ART.Path, /ART.SVG.Shape, /ART.VML.Shape]
 
 ...
 */
