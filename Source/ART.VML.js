@@ -16,25 +16,6 @@ requires: [/ART, /ART.Element, /ART.Container, /ART.Path]
 
 (function(){
 
-try {
-	
-	var namespaces = document.namespaces;
-	
-	namespaces.add('av', 'urn:schemas-microsoft-com:vml');
-	namespaces.add('ao', 'urn:schemas-microsoft-com:office:office');
-
-	var sheet = document.createStyleSheet();
-	sheet.addRule('vml', 'display:inline-block;position:relative;overflow:hidden;');
-
-	sheet.addRule('av\\:*', 'behavior:url(#default#VML);display:inline-block;position:absolute;width:100%;height:100%;left:0px;top:0px;');
-	sheet.addRule('ao\\:*', 'behavior:url(#default#VML);');
-	
-} catch(e){
-
-	return;
-
-}
-
 var precision = 100, UID = 0;
 
 // VML Base Class
@@ -70,6 +51,31 @@ ART.VML = new Class({
 	
 });
 
+// VML Initialization
+
+var styleSheet, styledTags = {}, styleTag = function(tag){
+	if (styleSheet) styledTags[tag] = styleSheet.addRule('av\\:' + tag, 'behavior:url(#default#VML);display:inline-block;position:absolute;width:100%;height:100%;left:0px;top:0px;');
+};
+
+ART.VML.init = function(document){
+
+	var namespaces = document.namespaces;
+	if (!namespaces) return false;
+
+	namespaces.add('av', 'urn:schemas-microsoft-com:vml');
+	namespaces.add('ao', 'urn:schemas-microsoft-com:office:office');
+
+	styleSheet = document.createStyleSheet();
+	styleSheet.addRule('vml', 'display:inline-block;position:relative;overflow:hidden;');
+	styleTag('fill');
+	styleTag('stroke');
+
+	// sheet.addRule('ao\\:*', 'behavior:url(#default#VML);'); - Office extension elements currently not in use
+
+	return true;
+
+};
+
 // VML Element Class
 
 ART.VML.Element = new Class({
@@ -78,6 +84,8 @@ ART.VML.Element = new Class({
 	
 	initialize: function(tag){
 		this.uid = (UID++).toString(16);
+		if (!(tag in styledTags)) styleTag(tag);
+
 		var element = this.element = document.createElement('av:' + tag);
 		element.setAttribute('id', 'e' + this.uid);
 		
@@ -158,11 +166,13 @@ ART.VML.Group = new Class({
 		this.width = container.width;
 		this.height = container.height;
 		this._transform();
+		return this;
 	},
 	
 	eject: function(){
 		this.parent();
 		this.width = this.height = null;
+		return this;
 	},
 	
 	_transform: function(){
@@ -215,8 +225,13 @@ ART.VML.Base = new Class({
 		
 		var tx = ctt[0] + ttt[0], ty = ctt[1] + ttt[1];
 		var sx = cts[0] * tts[0], sy = cts[1] * tts[1];
-		
 		var realX = tx / sx, realY = ty / sy;
+
+		// var rd = ctr[0] + ttr[0], rx = ctr[1] + ttr[1], ry = ctr[2] + ttr[2];
+		// 
+		// var rr = rd * Math.PI / 180;
+		// var sin = Math.sin(rr), cos = Math.cos(rr);
+		// var offsetX = (cw / 2) - rx, offsetY = (ch / 2) - ry;
 
 		// translate + halfpixel
 		this.element.coordorigin = (-(realX * p) - hp) + ',' + (-(realY * p) - hp);
@@ -314,11 +329,5 @@ ART.VML.Shape = new Class({
 	}
 
 });
-
-// Assign to ART
-
-ART.Shape = new Class({Extends: ART.VML.Shape});
-ART.Group = new Class({Extends: ART.VML.Group});
-ART.implement({Extends: ART.VML});
 	
 })();

@@ -47,16 +47,16 @@ ART.Rectangle = new Class({
 			if (width < 0) path.move(width, 0);
 			if (height < 0) path.move(0, height);
 
-			if (tl > 0) path.arcLeft(tl, -tl);
+			if (tl > 0) path.arc(tl, -tl);
 			path.line(Math.abs(width) - (tr + tl), 0);
 
-			if (tr > 0) path.arcRight(tr, tr);
+			if (tr > 0) path.arc(tr, tr);
 			path.line(0, Math.abs(height) - (tr + br));
 
-			if (br > 0) path.arcLeft(-br, br);
+			if (br > 0) path.arc(-br, br);
 			path.line(- Math.abs(width) + (br + bl), 0);
 
-			if (bl > 0) path.arcRight(-bl, -bl);
+			if (bl > 0) path.arc(-bl, -bl);
 			path.line(0, - Math.abs(height) + (bl + tl));
 		}
 
@@ -87,7 +87,50 @@ ART.Ellipse = new Class({
 	draw: function(width, height){
 		var path = new ART.Path;
 		var rx = width / 2, ry = height / 2;
-		path.move(0, ry).arcLeft(rx, -ry).arcRight(rx, ry).arcLeft(-rx, ry).arcRight(-rx, -ry);
+		path.move(0, ry).arc(width, 0, rx, ry).arc(-width, 0, rx, ry);
+		return this.parent(path);
+	}
+
+});
+
+ART.Wedge = new Class({
+
+	Extends: ART.Shape,
+
+	initialize: function(innerRadius, outerRadius, startAngle, endAngle){
+		this.parent();
+		if (innerRadius != null || outerRadius != null) this.draw(innerRadius, outerRadius, startAngle, endAngle);
+	},
+
+	draw: function(innerRadius, outerRadius, startAngle, endAngle){
+		var path = new ART.Path;
+
+		var circle = Math.PI * 2,
+			radiansPerDegree = Math.PI / 180,
+			sa = startAngle * radiansPerDegree % circle || 0,
+			ea = endAngle * radiansPerDegree % circle || 0,
+			ir = Math.min(innerRadius || 0, outerRadius || 0),
+			or = Math.max(innerRadius || 0, outerRadius || 0),
+			a = sa > ea ? circle - sa + ea : ea - sa;
+
+		if (a >= circle){
+
+			path.move(0, or).arc(or * 2, 0, or).arc(-or * 2, 0, or);
+			if (ir) path.move(or - ir, 0).counterArc(ir * 2, 0, ir).counterArc(-ir * 2, 0, ir);
+
+		} else {
+
+			var ss = Math.sin(sa), es = Math.sin(ea),
+				sc = Math.cos(sa), ec = Math.cos(ea),
+				ds = es - ss, dc = ec - sc, dr = ir - or,
+				large = a > Math.PI;
+
+			path.move(or + or * ss, or - or * sc).arc(or * ds, or * -dc, or, or, large).line(dr * es, dr * -ec);
+			if (ir) path.counterArc(ir * -ds, ir * dc, ir, ir, large);
+
+		}
+
+		path.close();
 		return this.parent(path);
 	}
 

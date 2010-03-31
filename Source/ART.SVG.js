@@ -16,9 +16,6 @@ requires: [/ART, /ART.Element, /ART.Container, /ART.Path]
 
 (function(){
 	
-var implementation = document.implementation;
-if (!implementation || !implementation.hasFeature || !document.implementation.hasFeature("http://www.w3.org/TR/SVG11/feature#BasicStructure", "1.1")) return;
-	
 var NS = 'http://www.w3.org/2000/svg', XLINK = 'http://www.w3.org/1999/xlink', UID = 0, createElement = function(tag){
 	return document.createElementNS(NS, tag);
 };
@@ -254,11 +251,5 @@ ART.SVG.Shape = new Class({
 	}
 
 });
-
-// Assign to ART
-
-ART.Shape = new Class({Extends: ART.SVG.Shape});
-ART.Group = new Class({Extends: ART.SVG.Group});
-ART.implement({Extends: ART.SVG});
 
 })();
