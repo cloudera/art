@@ -1,16 +1,9 @@
 /*
 ---
-
 name: ART.SVG
-
 description: SVG implementation for ART
-
-authors: "[Valerio Proietti](http://mad4milk.net)"
-
-provides: [ART.SVG, ART.SVG.Group, ART.SVG.Shape]
-
-requires: [/ART, /ART.Element, /ART.Container, /ART.Path]
-
+provides: [ART.SVG, ART.SVG.Group, ART.SVG.Shape, ART.SVG.Image]
+requires: [ART, ART.Element, ART.Container, ART.Path]
 ...
 */
 
@@ -59,7 +52,7 @@ ART.SVG.Element = new Class({
 		this.uid = (UID++).toString(16);
 		var element = this.element = createElement(tag);
 		element.setAttribute('id', 'e' + this.uid);
-		this.transform = {translate: [0, 0], scale: [1, 1], rotate: [0, 0, 0]};
+		this.transform = {translate: [0, 0], rotate: [0, 0, 0], scale: [1, 1]};
 	},
 	
 	/* transforms */
@@ -70,17 +63,18 @@ ART.SVG.Element = new Class({
 		this.element.setAttribute('transform', transforms.join(' '));
 	},
 	
-	// rotate: function(deg, x, y){
-	// 	if (x == null || y == null){
-	// 		var box = this.measure();
-	// 		x = box.x + box.width / 2; y = box.y + box.height / 2;
-	// 	}
-	// 	this.transform.rotate = [deg, x, y];
-	// 	this._writeTransform();
-	// 	return this;
-	// },
+	rotate: function(deg, x, y){
+		if (x == null || y == null){
+			var box = this.measure();
+			x = box.left + box.width / 2; y = box.top + box.height / 2;
+		}
+		this.transform.rotate = [deg, x, y];
+		this._writeTransform();
+		return this;
+	},
 
 	scale: function(x, y){
+		if (y == null) y = x;
 		this.transform.scale = [x, y];
 		this._writeTransform();
 		return this;
@@ -89,6 +83,11 @@ ART.SVG.Element = new Class({
 	translate: function(x, y){
 		this.transform.translate = [x, y];
 		this._writeTransform();
+		return this;
+	},
+	
+	setOpacity: function(opacity){
+		this.element.setAttribute('opacity', opacity);
 		return this;
 	},
 	
@@ -250,6 +249,25 @@ ART.SVG.Shape = new Class({
 		return new ART.Path(this.currentPath).measure();
 	}
 
+});
+
+ART.SVG.Image = new Class({
+	
+	Extends: ART.SVG.Base,
+	
+	initialize: function(src, width, height){
+		this.parent('image');
+		if (arguments.length == 3) this.draw.apply(this, arguments);
+	},
+	
+	draw: function(src, width, height){
+		var element = this.element;
+		element.setAttributeNS(XLINK, 'href', src);
+		element.setAttribute('width', width);
+		element.setAttribute('height', height);
+		return this;
+	}
+	
 });
 
 })();
