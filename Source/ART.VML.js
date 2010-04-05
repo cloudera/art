@@ -281,8 +281,8 @@ ART.VML.Base = new Class({
 				fill.color2 = color2[0];
 				fill['ao:opacity2'] = color2[1];
 			} else {
-				if (fill.color2) delete fill.color2;
-				if (fill['ao:opacity2']) delete fill['ao:opacity2'];
+				if (fill.color2) fill.color2 = false;
+				if (fill['ao:opacity2']) fill['ao:opacity2'] = false;
 			}
 			
 			fill.on = true;
