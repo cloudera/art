@@ -284,7 +284,8 @@ ART.VML.Base = new Class({
 
 		var addColor = function(offset, color){
 			color = Color.detach(color);
-			if (color1 == null) color1 = color; else color2 = color;
+			if (color1 == null) color1 = color;
+			else color2 = color;
 			colors.push(offset + ' ' + color[0]);
 		};
 
@@ -294,11 +295,12 @@ ART.VML.Base = new Class({
 		
 		fill.color = color1[0];
 		fill.color2 = color2[0];
-
+		
 		if (fill.colors) fill.colors.value = colors;
 		else fill.colors = colors;
-
+		
 		// Opacity order gets flipped when color stops are specified
+		
 		fill.opacity = color2[1];
 		fill['ao:opacity2'] = color1[1];
 
@@ -324,9 +326,9 @@ ART.VML.Base = new Class({
 		} else {
 			var fill = this.fillElement;
 			fill.type = 'solid';
-			fill.color2 = false;
-			fill['ao:opacity2'] = false;
-			fill.colors = '';
+			fill.color2 = '';
+			fill['ao:opacity2'] = '';
+			if (fill.colors) fill.colors.value = '';
 			this._setColor('fill', color);
 		}
 		return this;
@@ -336,15 +338,15 @@ ART.VML.Base = new Class({
 		var fill = this._createGradient('gradientradial', stops);
 		fill.focus = 50;
 		fill.focussize = '0 0';
-		fill.focusposition = (focusX == null ? .5 : focusX) + ',' + (focusY == null ? .5 : focusY);
-		fill.focus = radius == null || radius > .5 ? '100%' : Math.round(radius * 200) + '%';
+		fill.focusposition = (focusX == null ? 0.5 : focusX) + ',' + (focusY == null ? 0.5 : focusY);
+		fill.focus = (radius == null || radius > 0.5) ? '100%' : (Math.round(radius * 200) + '%');
 		return this;
 	},
 
 	fillLinear: function(stops, angle){
 		var fill = this._createGradient('gradient', stops);
 		fill.focus = '100%';
-		fill.angle = angle == null ? 0 : (90 + angle) % 360;
+		fill.angle = (angle == null) ? 0 : (90 + angle) % 360;
 		return this;
 	},
 
@@ -383,7 +385,7 @@ ART.VML.Shape = new Class({
 	draw: function(path){
 		
 		path = this.currentPath = new ART.Path(path);
-		this.currentVML = path.toVML(precision)
+		this.currentVML = path.toVML(precision);
 		var size = path.measure();
 		
 		this.right = size.right;
@@ -452,21 +454,21 @@ ART.VML.Shape = new Class({
 	fillRadial: function(stops, focusX, focusY, radius, centerX, centerY){
 		this.parent.apply(this, arguments);
 
-		if (focusX == null) focusX = .5;
-		if (focusY == null) focusY = .5;
-		if (radius == null) radius = .5;
+		if (focusX == null) focusX = 0.5;
+		if (focusY == null) focusY = 0.5;
+		if (radius == null) radius = 0.5;
 		if (centerX == null) centerX = focusX;
 		if (centerY == null) centerY = focusY;
 		
 		centerX += centerX - focusX;
 		centerY += centerY - focusY;
 		
-		focusX = (focusX - centerX) / (radius * 4) + .5;
-		focusY = (focusY - centerY) / (radius * 4) + .5;
+		focusX = (focusX - centerX) / (radius * 4) + 0.5;
+		focusY = (focusY - centerY) / (radius * 4) + 0.5;
 
 		this.fillElement.focus = '50%';
 		this.fillElement.focusposition = focusX + ',' + focusY;
-		this._redraw({ x: centerX, y: centerY, r: radius * 2 });
+		this._redraw({x: centerX, y: centerY, r: radius * 2});
 
 		return this;
 	}

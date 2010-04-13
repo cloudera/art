@@ -240,17 +240,17 @@ ART.SVG.Base = new Class({
 	fillLinear: function(stops, angle){
 		var gradient = this._createGradient('fill', 'linear', stops);
 
-		angle = (angle || 0) * Math.PI / 180;
+		angle = ((angle == null) ? 270 : angle) * Math.PI / 180;
 
 		var x = Math.cos(angle), y = -Math.sin(angle),
 			l = (Math.abs(x) + Math.abs(y)) / 2;
 
 		x *= l; y *= l;
 
-		gradient.setAttribute('x1', .5 - x);
-		gradient.setAttribute('x2', .5 + x);
-		gradient.setAttribute('y1', .5 - y);
-		gradient.setAttribute('y2', .5 + y);
+		gradient.setAttribute('x1', 0.5 - x);
+		gradient.setAttribute('x2', 0.5 + x);
+		gradient.setAttribute('y1', 0.5 - y);
+		gradient.setAttribute('y2', 0.5 + y);
 
 		return this;
 	},
