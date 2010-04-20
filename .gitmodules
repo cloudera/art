@@ -4,6 +4,3 @@
 [submodule "Table"]
 	path = Table
 	url = git://github.com/kamicane/mootools-table.git
-[submodule "MooTools"]
-	path = MooTools
-	url = git://github.com/mootools/mootools-core.git
