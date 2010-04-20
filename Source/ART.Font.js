@@ -3,8 +3,8 @@
 name: ART.Font
 description: Fonts for ART, implements code from [Cufón](http://cufon.shoqolate.com/)
 authors: ["[Simo Kinnunen](http://twitter.com/sorccu)", "[Valerio Proietti](http://mad4milk.net/)"]
-provides: [ART.Font]
-requires: [/ART.Shape]
+provides: ART.Font
+requires: ART.Shape
 ...
 */
 
