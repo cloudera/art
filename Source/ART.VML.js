@@ -63,7 +63,7 @@ ART.VML = new Class({
 
 // VML Initialization
 
-var VMLCSS = 'behavior:url(#default#VML);display:inline-block;position:absolute;width:100%;height:100%;left:0px;top:0px;';
+var VMLCSS = 'behavior:url(#default#VML);display:inline-block;position:absolute;left:0px;top:0px;';
 
 var styleSheet, styledTags = {}, styleTag = function(tag){
 	if (styleSheet) styledTags[tag] = styleSheet.addRule('av\\:' + tag, VMLCSS);
@@ -95,7 +95,7 @@ ART.VML.Element = new Class({
 	Extends: ART.Element,
 	
 	initialize: function(tag){
-		this.uid = (UID++).toString(16);
+		this.uid = ART.uniqueID();
 		if (!(tag in styledTags)) styleTag(tag);
 
 		var element = this.element = document.createElement('av:' + tag);
@@ -198,7 +198,7 @@ ART.VML.Element = new Class({
 	
 	rotate: function(deg, x, y){
 		if (x == null || y == null){
-			var box = this.measure();
+			var box = this.measure(precision);
 			x = box.left + box.width / 2; y = box.top + box.height / 2;
 		}
 		this.transform.rotate = [deg, x, y];
@@ -381,13 +381,17 @@ ART.VML.Shape = new Class({
 		if (path != null) this.draw(path);
 	},
 	
+	getPath: function(){
+		return this.currentPath;
+	},
+	
 	// SVG to VML
 	
 	draw: function(path){
 		
-		path = this.currentPath = new ART.Path(path);
-		this.currentVML = path.toVML(precision);
-		var size = path.measure();
+		this.currentPath = (path instanceof ART.Path) ? path : new ART.Path(path);
+		this.currentVML = this.currentPath.toVML(precision);
+		var size = this.currentPath.measure(precision);
 		
 		this.right = size.right;
 		this.bottom = size.bottom;
@@ -403,7 +407,7 @@ ART.VML.Shape = new Class({
 	},
 	
 	measure: function(){
-		return new ART.Path(this.currentPath).measure();
+		return this.getPath().measure();
 	},
 	
 	// radial gradient workaround
