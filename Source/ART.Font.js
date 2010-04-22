@@ -46,12 +46,21 @@ ART.Font = new Class({
 	
 	initialize: function(font, variant, text, size){
 		this.parent();
-		if (font != null && text != null && size != null) this.draw(font, variant, text, size);
+		if (font) this._font = fonts[font][(variant || 'normal').camelCase()];
+		if (font != null && text != null && size != null) this.draw(text, size, font, variant);
 	},
 	
-	draw: function(font, variant, text, size){
-		if (typeof font == 'string') font = fonts[font][(variant || 'normal').camelCase()];
+	update: function(text, size) {
+		this.draw(text, size == null ? this._size : size, this._font);
+	},
+	
+	draw: function(text, size, font, variant){
+		font = font || this._font;
+		if (typeof font == 'string') this._font = font = fonts[font][(variant || 'normal').camelCase()];
 		if (!font) throw new Error('The specified font has not been found.');
+		this._size = size || this._size;
+		this._font = font;
+
 		size = size / font.face['units-per-em'];
 		
 		var width = 0, height = size * font.face.ascent, path = '';
