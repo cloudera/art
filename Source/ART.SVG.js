@@ -172,7 +172,7 @@ ART.SVG.Base = new Class({
 	_ejectGradient: function(type){
 		if (!this.container) return;
 		var gradient = this[type + 'Gradient'];
-		if (gradient) this.container.defs.removeChild(gradient);
+		if (gradient && gradient.parentNode) this.container.defs.removeChild(gradient);
 	},
 	
 	/* styles */
