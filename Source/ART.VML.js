@@ -30,6 +30,7 @@ ART.VML = new Class({
 	inject: function(element){
 		if (element.element) element = element.element;
 		element.appendChild(this.vml);
+		return this;
 	},
 	
 	resize: function(width, height){
