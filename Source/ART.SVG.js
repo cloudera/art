@@ -1,7 +1,7 @@
 /*
 ---
 name: ART.SVG
-description: SVG implementation for ART
+description: "SVG implementation for ART"
 provides: [ART.SVG, ART.SVG.Group, ART.SVG.Shape, ART.SVG.Image]
 requires: [ART, ART.Element, ART.Container, ART.Path]
 ...
@@ -172,7 +172,7 @@ ART.SVG.Base = new Class({
 	_ejectGradient: function(type){
 		if (!this.container) return;
 		var gradient = this[type + 'Gradient'];
-		if (gradient) this.container.defs.removeChild(gradient);
+		if (gradient && gradient.parentNode) this.container.defs.removeChild(gradient);
 	},
 	
 	/* styles */
@@ -289,14 +289,18 @@ ART.SVG.Shape = new Class({
 		if (path != null) this.draw(path);
 	},
 	
+	getPath: function(){
+		return this.currentPath || new ART.Path;
+	},
+	
 	draw: function(path){
-		this.currentPath = path.toString();
-		this.element.setAttribute('d', this.currentPath);
+		this.currentPath = (path instanceof ART.Path) ? path : new ART.Path(path);
+		this.element.setAttribute('d', this.currentPath.toSVG());
 		return this;
 	},
 	
 	measure: function(){
-		return new ART.Path(this.currentPath).measure();
+		return this.getPath().measure();
 	}
 
 });

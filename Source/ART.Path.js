@@ -1,7 +1,7 @@
 /*
 ---
 name: ART.Path
-description: Class to generate a valid SVG path using method calls.
+description: "Class to generate a valid SVG path using method calls."
 authors: ["[Valerio Proietti](http://mad4milk.net)", "[Sebastian Markbåge](http://calyptus.eu/)"]
 provides: ART.Path
 requires: ART
@@ -63,18 +63,22 @@ var calculateArc = function(rx, ry, rotation, large, clockwise, x, y, tX, tY){
 	};
 };
 
-var measureAndTransform = function(parts, precision){
+var extrapolate = function(parts, precision){
 	
 	var boundsX = [], boundsY = [];
 	
-	var ux = function(x){
-		boundsX.push(x);
-		return (precision) ? Math.round(x * precision) : x;
-	}, uy = function(y){
-		boundsY.push(y);
-		return (precision) ? Math.round(y * precision) : y;
-	}, np = function(v){
-		return (precision) ? Math.round(v * precision) : v;
+	var ux = (precision != null) ? function(x){
+		boundsX.push(x); return Math.round(x * precision);
+	} : function(x){
+		boundsX.push(x); return x;
+	}, uy = (precision != null) ? function(y){
+		boundsY.push(y); return Math.round(y * precision);
+	} : function(y){
+		boundsY.push(y); return y;
+	}, np = (precision != null) ? function(v){
+		return Math.round(v * precision);
+	} : function(v){
+		return v;
 	};
 
 	var reflect = function(sx, sy, ex, ey){
@@ -177,15 +181,34 @@ var measureAndTransform = function(parts, precision){
 ART.Path = new Class({
 	
 	initialize: function(path){
-		this.boundingBox = null;
-		if (path == null) this.path = [];  //no path
-		else if (path.path) this.path = Array.slice(path.path); //already a path
-		else this.path = parse(path); //string path
+		if (path instanceof ART.Path){ //already a path, copying
+			this.path = Array.slice(path.path);
+			this.box = path.box;
+			this.vml = path.vml;
+			this.svg = path.svg;
+		} else {
+			this.path = (path == null) ? [] : parse(path);
+			this.box = null;
+			this.vml = null;
+			this.svg = null;
+		}
+
+		return this;
 	},
 	
-	push: function(){
-		this.boundingBox = null;
+	push: function(){ //modifying the current path resets the memoized values.
+		this.box = null;
+		this.vml = null;
+		this.svg = null;
 		this.path.push(Array.slice(arguments));
+		return this;
+	},
+	
+	reset: function(){
+		this.box = null;
+		this.vml = null;
+		this.svg = null;
+		this.path = [];
 		return this;
 	},
 	
@@ -218,21 +241,39 @@ ART.Path = new Class({
 	/* transformation, measurement */
 	
 	toSVG: function(){
-		var path = '';
-		for (var i = 0, l = this.path.length; i < l; i++) path += this.path[i].join(' ');
-		return path;
+		if (this.svg == null){
+			var path = '';
+			for (var i = 0, l = this.path.length; i < l; i++) path += this.path[i].join(' ');
+			this.svg = path;
+		}
+		return this.svg;
 	},
 	
 	toVML: function(precision){
-		var data = measureAndTransform(this.path, precision);
-		this.boundingBox = data[1];
-		return data[0];
+		if (this.vml == null){
+			var data = extrapolate(this.path, precision);
+			this.box = data[1];
+			this.vml = data[0];
+		}
+		return this.vml;
 	},
 	
-	measure: function(){
-		if (this.boundingBox) return this.boundingBox;
-		if (this.path.length) return this.boundingBox = measureAndTransform(this.path)[1];
-		else return {left: 0, top: 0, right: 0, bottom: 0, width: 0, height: 0};
+	measure: function(precision){
+		if (this.box == null){
+					
+			if (this.path.length){
+				var data = extrapolate(this.path, precision);
+				this.box = data[1];
+				this.vml = data[2];
+			} else {
+				this.box = {left: 0, top: 0, right: 0, bottom: 0, width: 0, height: 0};
+				this.vml = '';
+				this.svg = '';
+			}
+		
+		}
+		
+		return this.box;
 	}
 	
 });

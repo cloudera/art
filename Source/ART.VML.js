@@ -1,7 +1,7 @@
 /*
 ---
 name: ART.VML
-description: VML implementation for ART
+description: "VML implementation for ART"
 authors: ["[Simo Kinnunen](http://twitter.com/sorccu)", "[Valerio Proietti](http://mad4milk.net)", "[Sebastian Markbåge](http://calyptus.eu/)"]
 provides: [ART.VML, ART.VML.Group, ART.VML.Shape]
 requires: [ART, ART.Element, ART.Container, ART.Path]
@@ -199,7 +199,7 @@ ART.VML.Element = new Class({
 	
 	rotate: function(deg, x, y){
 		if (x == null || y == null){
-			var box = this.measure();
+			var box = this.measure(precision);
 			x = box.left + box.width / 2; y = box.top + box.height / 2;
 		}
 		this.transform.rotate = [deg, x, y];
@@ -382,13 +382,17 @@ ART.VML.Shape = new Class({
 		if (path != null) this.draw(path);
 	},
 	
+	getPath: function(){
+		return this.currentPath;
+	},
+	
 	// SVG to VML
 	
 	draw: function(path){
 		
-		path = this.currentPath = new ART.Path(path);
-		this.currentVML = path.toVML(precision);
-		var size = path.measure();
+		this.currentPath = (path instanceof ART.Path) ? path : new ART.Path(path);
+		this.currentVML = this.currentPath.toVML(precision);
+		var size = this.currentPath.measure(precision);
 		
 		this.right = size.right;
 		this.bottom = size.bottom;
@@ -404,7 +408,7 @@ ART.VML.Shape = new Class({
 	},
 	
 	measure: function(){
-		return new ART.Path(this.currentPath).measure();
+		return this.getPath().measure();
 	},
 	
 	// radial gradient workaround
