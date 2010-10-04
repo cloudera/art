@@ -2,7 +2,7 @@
 ---
 name: ART
 description: "The heart of ART."
-requires: [Core/Class, Color/Color, Table/Table]
+requires: [Core/Class, Color/Color, More/Table]
 provides: [ART, ART.Element, ART.Container]
 ...
 */
